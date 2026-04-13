@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adam Chiguer — Engineering Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #e8162e;
+    --red-dim: #7a0d19;
+    --white: #f0f0f0;
+    --gray: #888;
+    --gray-dim: #333;
+    --bg: #0a0a0a;
+    --card: #111;
+    --card-border: #1e1e1e;
+    --mono: 'Share Tech Mono', monospace;
+    --display: 'Orbitron', sans-serif;
+    --body: 'Rajdhani', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: var(--body);
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--red); }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 3rem;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--card-border);
+  }
+  .nav-logo {
+    font-family: var(--display);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--red); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--gray);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--red); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 8rem 3rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-grid-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(232,22,46,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232,22,46,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at 30% 50%, black 30%, transparent 80%);
+  }
+  .hero-accent {
+    position: absolute; left: 0; top: 15%; bottom: 15%;
+    width: 4px; background: var(--red);
+    box-shadow: 0 0 30px var(--red);
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 900px; padding-left: 2rem; }
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--red);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.2s forwards;
+  }
+  .hero-name {
+    font-family: var(--display);
+    font-size: clamp(3rem, 8vw, 7rem);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.4s forwards;
+  }
+  .hero-name .line2 { color: var(--red); display: block; }
+  .hero-sub {
+    font-family: var(--body);
+    font-size: 1.3rem;
+    font-weight: 300;
+    color: var(--gray);
+    margin-top: 1.5rem;
+    letter-spacing: 0.05em;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.6s forwards;
+  }
+  .hero-sub strong { color: var(--white); font-weight: 500; }
+  .hero-cta {
+    margin-top: 3rem;
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.8s forwards;
+  }
+  .btn {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    padding: 0.8rem 2rem;
+    text-decoration: none;
+    border: 1px solid;
+    transition: all 0.25s;
+    display: inline-block;
+  }
+  .btn-primary { background: var(--red); color: #fff; border-color: var(--red); }
+  .btn-primary:hover { background: transparent; color: var(--red); }
+  .btn-secondary { background: transparent; color: var(--gray); border-color: var(--gray-dim); }
+  .btn-secondary:hover { border-color: var(--white); color: var(--white); }
+
+  .hero-stats {
+    position: absolute; right: 4rem; bottom: 4rem;
+    display: flex; flex-direction: column; gap: 2rem;
+    opacity: 0; animation: fadeIn 0.8s 1.2s forwards;
+  }
+  .stat { text-align: right; }
+  .stat-num {
+    font-family: var(--display);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--red);
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--gray);
+    letter-spacing: 0.1em;
+    margin-top: 0.2rem;
+  }
+
+  /* ── SECTION COMMON ── */
+  section { padding: 6rem 3rem; }
+  .section-header {
+    display: flex; align-items: center; gap: 1.5rem;
+    margin-bottom: 4rem;
+  }
+  .section-num {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--red);
+    letter-spacing: 0.2em;
+  }
+  .section-title {
+    font-family: var(--display);
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  .section-line {
+    flex: 1; height: 1px;
+    background: linear-gradient(90deg, var(--card-border), transparent);
+  }
+
+  /* ── ABOUT ── */
+  #about {
+    background: linear-gradient(135deg, #0d0d0d 0%, #0a0a0a 100%);
+  }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+  .about-text p {
+    font-size: 1.1rem;
+    font-weight: 400;
+    line-height: 1.75;
+    color: #bbb;
+    margin-bottom: 1.5rem;
+  }
+  .about-text p strong { color: var(--white); }
+  .contact-block {
+    margin-top: 2.5rem;
+    border-left: 2px solid var(--red);
+    padding-left: 1.5rem;
+  }
+  .contact-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--red);
+    letter-spacing: 0.2em;
+    margin-bottom: 0.75rem;
+  }
+  .contact-item {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-bottom: 0.4rem;
+  }
+  .contact-item a { color: inherit; text-decoration: none; transition: color 0.2s; }
+  .contact-item a:hover { color: var(--red); }
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .skill-chip {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    padding: 0.75rem 1rem;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--gray);
+    letter-spacing: 0.08em;
+    transition: all 0.2s;
+  }
+  .skill-chip:hover { border-color: var(--red); color: var(--white); }
+  .skill-chip .chip-cat { color: var(--red); font-size: 0.55rem; display: block; margin-bottom: 0.25rem; }
+
+  /* ── PROJECTS ── */
+  #projects { background: var(--bg); }
+  .projects-list { display: flex; flex-direction: column; gap: 3rem; }
+  .project-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    transition: border-color 0.25s;
+    overflow: hidden;
+    position: relative;
+  }
+  .project-card:hover { border-color: var(--red); }
+  .project-card::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px; background: var(--red);
+    transform: scaleY(0); transform-origin: bottom;
+    transition: transform 0.3s ease;
+  }
+  .project-card:hover::before { transform: scaleY(1); }
+  .project-num-col {
+    padding: 2rem 1.5rem;
+    border-right: 1px solid var(--card-border);
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: flex-start;
+    min-width: 60px;
+  }
+  .project-num {
+    font-family: var(--display);
+    font-size: 0.65rem;
+    color: var(--red-dim);
+    writing-mode: vertical-rl;
+    letter-spacing: 0.3em;
+  }
+  .project-body { padding: 2rem 2.5rem; }
+  .project-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .tag {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--red);
+    border: 1px solid var(--red-dim);
+    padding: 0.2rem 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .project-title {
+    font-family: var(--display);
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.03em;
+  }
+  .project-desc {
+    font-size: 1rem;
+    color: #999;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+  .project-bullets {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 0.5rem;
+  }
+  .project-bullets li {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: #777;
+    padding-left: 1.2rem;
+    position: relative;
+    line-height: 1.6;
+  }
+  .project-bullets li::before {
+    content: '›';
+    position: absolute; left: 0;
+    color: var(--red);
+  }
+
+  /* ── CAD GALLERY ── */
+  #cad { background: #0d0d0d; }
+  .cad-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--card-border);
+    border: 1px solid var(--card-border);
+  }
+  .cad-item {
+    background: var(--card);
+    padding: 1.5rem;
+    text-align: center;
+    transition: background 0.2s;
+    cursor: default;
+  }
+  .cad-item:hover { background: #161616; }
+  .cad-item-num {
+    font-family: var(--display);
+    font-size: 0.6rem;
+    color: var(--red-dim);
+    letter-spacing: 0.2em;
+    margin-bottom: 0.5rem;
+  }
+  .cad-item-name {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--gray);
+    letter-spacing: 0.05em;
+  }
+  .cad-item-name .badge {
+    display: inline-block;
+    background: var(--red-dim);
+    color: #f5a0a8;
+    font-size: 0.55rem;
+    padding: 0.1rem 0.4rem;
+    margin-top: 0.4rem;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 4rem 3rem 2rem;
+    border-top: 1px solid var(--card-border);
+    display: flex; justify-content: space-between; align-items: flex-end;
+    flex-wrap: wrap; gap: 2rem;
+  }
+  .footer-name {
+    font-family: var(--display);
+    font-size: 1.8rem;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    color: var(--white);
+  }
+  .footer-name span { color: var(--red); }
+  .footer-sub {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--gray);
+    letter-spacing: 0.15em;
+    margin-top: 0.5rem;
+  }
+  .footer-contact {
+    text-align: right;
+  }
+  .footer-contact a {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--gray);
+    text-decoration: none;
+    margin-bottom: 0.4rem;
+    transition: color 0.2s;
+  }
+  .footer-contact a:hover { color: var(--red); }
+  .footer-copy {
+    width: 100%;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--gray-dim);
+    letter-spacing: 0.1em;
+    text-align: center;
+    margin-top: 2rem;
+    border-top: 1px solid var(--card-border);
+    padding-top: 1.5rem;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { gap: 1.5rem; }
+    section { padding: 4rem 1.5rem; }
+    #hero { padding: 7rem 1.5rem 3rem; }
+    .hero-stats { display: none; }
+    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .project-card { grid-template-columns: 1fr; }
+    .project-num-col { display: none; }
+    footer { flex-direction: column; align-items: flex-start; }
+    .footer-contact { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">ADAM <span>CHIGUER</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">ABOUT</a></li>
+    <li><a href="#projects">PROJECTS</a></li>
+    <li><a href="#cad">CAD</a></li>
+    <li><a href="#footer">CONTACT</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-accent"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">// engineering portfolio · 2026</p>
+    <h1 class="hero-name">
+      ADAM<br>
+      <span class="line2">CHIGUER</span>
+    </h1>
+    <p class="hero-sub">
+      <strong>Mechanical &amp; Aerospace Engineering</strong> · George Mason University<br>
+      FEA · CAD · Rocketry · Robotics · Embedded Systems
+    </p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary">VIEW PROJECTS</a>
+      <a href="mailto:adam.chiguer@yahoo.com" class="btn btn-secondary">GET IN TOUCH</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">6+</div>
+      <div class="stat-label">MAJOR PROJECTS</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">10+</div>
+      <div class="stat-label">CAD MODELS</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">2nd</div>
+      <div class="stat-label">NATIONALLY · NASA</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header reveal">
+    <span class="section-num">01</span>
+    <h2 class="section-title">ABOUT ME</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>I'm a second-year <strong>mechanical engineering student with an aerospace engineering concentration</strong> at George Mason University. I spent my first year at the University of Virginia as an aerospace engineering student before transferring.</p>
+      <p>I love math and engineering, and I particularly love the aerospace field because it consists of all the on-ground engineering and then more — <strong>3D movement, higher precision, greater stakes.</strong></p>
+      <div class="contact-block">
+        <div class="contact-label">// CONTACT</div>
+        <div class="contact-item"><a href="mailto:adam.chiguer@yahoo.com">adam.chiguer@yahoo.com</a></div>
+        <div class="contact-item"><a href="tel:+17036877822">+1 (703) 687-7822</a></div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="skills-grid">
+        <div class="skill-chip"><span class="chip-cat">// SOFTWARE</span>SOLIDWORKS</div>
+        <div class="skill-chip"><span class="chip-cat">// SOFTWARE</span>ANSYS FEA</div>
+        <div class="skill-chip"><span class="chip-cat">// SOFTWARE</span>MATLAB</div>
+        <div class="skill-chip"><span class="chip-cat">// SOFTWARE</span>KiCAD</div>
+        <div class="skill-chip"><span class="chip-cat">// METHOD</span>FEA Analysis</div>
+        <div class="skill-chip"><span class="chip-cat">// METHOD</span>Method of Characteristics</div>
+        <div class="skill-chip"><span class="chip-cat">// HARDWARE</span>IMU / ADC</div>
+        <div class="skill-chip"><span class="chip-cat">// HARDWARE</span>Sheet Metal</div>
+        <div class="skill-chip"><span class="chip-cat">// SKILL</span>Welding</div>
+        <div class="skill-chip"><span class="chip-cat">// SKILL</span>SEM Microscopy</div>
+        <div class="skill-chip"><span class="chip-cat">// WRITING</span>LaTeX / Overleaf</div>
+        <div class="skill-chip"><span class="chip-cat">// LEADERSHIP</span>Systems Engineering</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-header reveal">
+    <span class="section-num">02</span>
+    <h2 class="section-title">PROJECTS</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="projects-list">
+
+    <!-- P1 -->
+    <div class="project-card reveal">
+      <div class="project-num-col">
+        <span class="project-num">P — 01</span>
+      </div>
+      <div class="project-body">
+        <div class="project-tags">
+          <span class="tag">ROCKETRY</span>
+          <span class="tag">SOLIDWORKS</span>
+          <span class="tag">ANSYS</span>
+          <span class="tag">LEADERSHIP</span>
+        </div>
+        <h3 class="project-title">UVA Rocketry — Hybrid Rocket R&D</h3>
+        <p class="project-desc">Led combustion device design for UVA's 2026 IREC competition hybrid rocket engine, including nozzle, combustion chamber, and injector design.</p>
+        <ul class="project-bullets">
+          <li>Led a team of 10 students; organized deliverables and spearheaded research</li>
+          <li>Calculated bolt, tear-out, bearing, and hoop stresses — iterated design to maintain SF &gt; 2</li>
+          <li>Single-handedly developed complete 3D engine model in SOLIDWORKS</li>
+          <li>Designed bell nozzle via method of characteristics for perfect mid-burn expansion</li>
+          <li>Conducted structural FEA in Ansys to validate operational load margins</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- P2 -->
+    <div class="project-card reveal">
+      <div class="project-num-col">
+        <span class="project-num">P — 02</span>
+      </div>
+      <div class="project-body">
+        <div class="project-tags">
+          <span class="tag">ROBOTICS</span>
+          <span class="tag">NASA</span>
+          <span class="tag">FEA</span>
+          <span class="tag">PCB</span>
+        </div>
+        <h3 class="project-title">Mechatronics &amp; Robotics Society (MARS)</h3>
+        <p class="project-desc">Multidisciplinary work across mechanical, electrical, and systems engineering teams for the NASA Lunabotics competition. Systems Engineering paper placed 2nd nationally.</p>
+        <ul class="project-bullets">
+          <li>Mechanical: FEA on components/systems; founded &amp; led R&D team; sheet metal bucket drum fabrication</li>
+          <li>Electrical: IMU implementation, ADC read/write, KiCAD PCB design fundamentals</li>
+          <li>Systems Lead: managed design reviews (MCR, PDR, CDR); developed trade studies; wrote SE paper</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- P3 -->
+    <div class="project-card reveal">
+      <div class="project-num-col">
+        <span class="project-num">P — 03</span>
+      </div>
+      <div class="project-body">
+        <div class="project-tags">
+          <span class="tag">FORMULA SAE</span>
+          <span class="tag">ANSYS</span>
+          <span class="tag">WELDING</span>
+        </div>
+        <h3 class="project-title">Formula SAE — Torsional Stiffness Analysis</h3>
+        <p class="project-desc">Performed torsional stiffness FEA on a Formula SAE chassis from scratch — no prior documentation existed. Wrote the instruction guide for future teams.</p>
+        <ul class="project-bullets">
+          <li>Learned Ansys FEA features independently on a complex multi-member chassis</li>
+          <li>Authored the team's first torsional stiffness analysis documentation</li>
+          <li>Designed welding sawhorses for chassis assembly; learned welding on the job</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- P4 -->
+    <div class="project-card reveal">
+      <div class="project-num-col">
+        <span class="project-num">P — 04</span>
+      </div>
+      <div class="project-body">
+        <div class="project-tags">
+          <span class="tag">RESEARCH</span>
+          <span class="tag">SEM</span>
+          <span class="tag">CAD</span>
+          <span class="tag">SOFTWARE</span>
+        </div>
+        <h3 class="project-title">Summer Research — Materials &amp; Fracture Mechanics</h3>
+        <p class="project-desc">Hands-on EAC (Environmental Assisted Cracking) experimentation with SEM analysis, plus proactive software and CAD development to streamline lab operations.</p>
+        <ul class="project-bullets">
+          <li>Welded DCPD wires, assembled environmental cells, ran 24–48hr precrack/EAC/fracture experiments</li>
+          <li>Used SEM to image crack propagation; stitched images to identify cracking regimes</li>
+          <li>Developed CAD models for machined parts including a custom NASA environmental cell</li>
+          <li>Built lab automation software: remote monitoring via TeamViewer, phone alerts, digital flow meter</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- P5 -->
+    <div class="project-card reveal">
+      <div class="project-num-col">
+        <span class="project-num">P — 05</span>
+      </div>
+      <div class="project-body">
+        <div class="project-tags">
+          <span class="tag">HARDWARE</span>
+          <span class="tag">EMBEDDED</span>
+          <span class="tag">3D PRINT</span>
+          <span class="tag">STARTUP</span>
+        </div>
+        <h3 class="project-title">Core Vitals Medical Device — RM2</h3>
+        <p class="project-desc">Designed a rugged, rechargeable proof-of-concept wearable measuring SpO₂ and heart rate, with a path toward blood pressure via Pulse Transit Time.</p>
+        <ul class="project-bullets">
+          <li>Iterated multiple 3D-printed housing designs with stress testing (drop tests)</li>
+          <li>Wrote custom algorithms beyond sensor defaults to maximize measurement accuracy</li>
+          <li>Exploring commercialization and patenting via VIPC/SBIR</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- P6 -->
+    <div class="project-card reveal">
+      <div class="project-num-col">
+        <span class="project-num">P — 06</span>
+      </div>
+      <div class="project-body">
+        <div class="project-tags">
+          <span class="tag">ROCKETRY</span>
+          <span class="tag">L1 CERT</span>
+          <span class="tag">TRIPOLI</span>
+        </div>
+        <h3 class="project-title">L1 Rocket Design</h3>
+        <p class="project-desc">Fully designed and built a personal L1 certification rocket — airframe, fins, and recovery system complete. Saving for motor purchase to launch with Tripoli.</p>
+        <ul class="project-bullets">
+          <li>Complete physical build ready for flight</li>
+          <li>Pursuing Tripoli L1 high-power rocketry certification</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- P7 -->
+    <div class="project-card reveal">
+      <div class="project-num-col">
+        <span class="project-num">P — 07</span>
+      </div>
+      <div class="project-body">
+        <div class="project-tags">
+          <span class="tag">MATLAB</span>
+          <span class="tag">U.S. NAVY</span>
+          <span class="tag">PROPULSION</span>
+        </div>
+        <h3 class="project-title">U.S. Navy Missile Booster Optimization</h3>
+        <p class="project-desc">MATLAB tool to evaluate how standardized boosters affect ship-launched missile delta-v performance, enabling simpler Gas Management Systems design.</p>
+        <ul class="project-bullets">
+          <li>Interactive user inputs for ISP and three-stage mass ratios</li>
+          <li>3D surface plot of exit velocity vs. ISP and mass ratio parameter space</li>
+          <li>Outputs total Δv, burntime efficiency, and terminal velocity metrics</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- P8 -->
+    <div class="project-card reveal">
+      <div class="project-num-col">
+        <span class="project-num">P — 08</span>
+      </div>
+      <div class="project-body">
+        <div class="project-tags">
+          <span class="tag">SOFTWARE</span>
+          <span class="tag">AI / NLP</span>
+          <span class="tag">HACKATHON</span>
+        </div>
+        <h3 class="project-title">Fact-Checker Software — VTHax</h3>
+        <p class="project-desc">Real-time debate/speech fact-checking tool built at Virginia Tech Hackathon. Records live audio, transcribes it, queries an AI model with web sources, and returns verdicts with confidence intervals.</p>
+        <ul class="project-bullets">
+          <li>V1 built at hackathon; V2 in progress with improved UI and speech recognition</li>
+          <li>Pipeline: audio → transcription → query cleaning → web verification → verdict + confidence</li>
+          <li>Designed for congressional hearings, debates, and public speeches</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CAD GALLERY -->
+<section id="cad">
+  <div class="section-header reveal">
+    <span class="section-num">03</span>
+    <h2 class="section-title">GENERAL CAD EXPERIENCE</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="cad-grid reveal">
+    <div class="cad-item"><div class="cad-item-num">_1</div><div class="cad-item-name">Fan</div></div>
+    <div class="cad-item"><div class="cad-item-num">_2</div><div class="cad-item-name">SW Certification<span class="badge">CERTIFIED</span></div></div>
+    <div class="cad-item"><div class="cad-item-num">_3</div><div class="cad-item-name">Spatula<br><span class="badge">SW CERT</span></div></div>
+    <div class="cad-item"><div class="cad-item-num">_4</div><div class="cad-item-name">Fidget Spinners<br><span class="badge">SW CERT</span></div></div>
+    <div class="cad-item"><div class="cad-item-num">_5</div><div class="cad-item-name">Device Prototype<br><span class="badge">SW CERT</span></div></div>
+    <div class="cad-item"><div class="cad-item-num">_6</div><div class="cad-item-name">Robot Arm Assembly</div></div>
+    <div class="cad-item"><div class="cad-item-num">_7</div><div class="cad-item-name">Rim of a Wheel</div></div>
+    <div class="cad-item"><div class="cad-item-num">_8</div><div class="cad-item-name">SW Certification<span class="badge">CERTIFIED</span></div></div>
+    <div class="cad-item"><div class="cad-item-num">_9</div><div class="cad-item-name">SW Certification<span class="badge">CERTIFIED</span></div></div>
+    <div class="cad-item"><div class="cad-item-num">_10</div><div class="cad-item-name">SW Certification<span class="badge">CERTIFIED</span></div></div>
+    <div class="cad-item"><div class="cad-item-num">+</div><div class="cad-item-name">Cup Holder<br><span style="font-size:0.6rem;color:#555">FEA included</span></div></div>
+    <div class="cad-item"><div class="cad-item-num">+</div><div class="cad-item-name">Fractal Clamp Desk Extension<br><span style="font-size:0.6rem;color:#555">FEA included</span></div></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <div>
+    <div class="footer-name">ADAM <span>CHIGUER</span></div>
+    <div class="footer-sub">MECHANICAL &amp; AEROSPACE ENGINEERING · GMU · 2026</div>
+  </div>
+  <div class="footer-contact">
+    <a href="mailto:adam.chiguer@yahoo.com">adam.chiguer@yahoo.com</a>
+    <a href="tel:+17036877822">+1 (703) 687-7822</a>
+  </div>
+  <div class="footer-copy">© 2026 ADAM CHIGUER · ALL RIGHTS RESERVED</div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), 80 * i);
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => io.observe(el));
+</script>
+</body>
+</html>
